@@ -1,6 +1,6 @@
 {
     "name": "dou-xx/nova-poshta",
-    "description": "Nova Poshta API (beta version)",
+    "description": "Nova Poshta API",
     "type": "library",
     "license": "MIT",
     "autoload": {
@@ -14,7 +14,7 @@
             "email": "nogganoxx@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "1.0.0",
     "require": {
         "php": "^8.2",
         "guzzlehttp/guzzle": "^7.2"

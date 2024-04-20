@@ -20,7 +20,12 @@ class BaseRequest
         return $this->apiKey;
     }
 
-    protected function run(RequestContract $requestContract): ResponseContract
+    /**
+     * @param RequestContract $requestContract
+     *
+     * @return ResponseContract
+     */
+    protected function run(RequestContract $requestContract)
     {
         $api = new NovaPoshtaAPI($this->apiKey);
 

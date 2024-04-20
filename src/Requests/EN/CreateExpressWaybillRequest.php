@@ -5,61 +5,35 @@ namespace Dou\NovaPoshta\Requests\EN;
 use Dou\NovaPoshta\Requests\BaseRequest;
 use Dou\NovaPoshta\Contract\RequestContract;
 use Dou\NovaPoshta\Contract\ResponseContract;
-use Dou\NovaPoshta\Responses\CounterPartyListResponse;
 use Dou\NovaPoshta\ArrHelper;
+use Dou\NovaPoshta\Responses\CreateEnResponse;
 
 /**
- * @method self changePayerType(string $value)             кто платит
- * @method self changePaymentMethod(string $value)         тип оплаты
- * @method self changeDateTime(string $value)              дата отправки
- * @method self changeCargoType(string $value)             Тип груза
+ * @method self changePayerType(string $value)             Кто оплачивает доставку: 'Recipient', 'Sender'
+ * @method self changePaymentMethod(string $value)         Тип оплаты доставки: 'Cash', 'NonCash'
+ * @method self changeDateTime(string $value)              Дата отправки: Дата когда вы планируете привезти посылку на отделение для отправки.
+ * @method self changeCargoType(string $value)             Тип груза: 'Parcel' - посылка, 'Pallets' - паллеты, 'Documents' - документы (пакет)
  * @method self changeVolumeGeneral(string $value)         Объем общий, м.куб
  * @method self changeWeight(string $value)                Вес фактический, кг
- * @method self changeServiceType(string $value)           Технология доставки
- * @method self changeSeatsAmount(string $value)           количество мест отправления
- * @method self changeDescription(string $value)           описание
- * @method self changeCost(string $value)                  объявленная стоимость
- * @method self changeCitySender(string $value)            город отправителя
- * @method self changeSender(string $value)                Контрагент отправитель
- * @method self changeSenderAddress(string $value)         адреса отправителя
- * @method self changeContactSender(string $value)         контактного лица отправителя
- * @method self changeSendersPhone(string $value)          телефон отправителя
- * @method self changeCityRecipient(string $value)         город получателя
- * @method self changeRecipient(string $value)             получатель
- * @method self changeRecipientAddress(string $value)      адреса получателя
- * @method self changeContactRecipient(string $value)      контактного лица получателя
- * @method self changeRecipientsPhone(string $value)       телефон получателя
- * @method self changeAdditionalInformation(string $value) добавочная текстовая информация
- * @method self changeInfoRegClientBarcodes(string $value) добавочная текстовая информация
+ * @method self changeServiceType(string $value)           Технология доставки: WarehouseWarehouse - с отделения на отделение, WarehouseDoors - курьером
+ * @method self changeSeatsAmount(string $value)           Количество мест отправления
+ * @method self changeDescription(string $value)           Описание
+ * @method self changeCost(string $value)                  Объявленная стоимость
+ * @method self changeCitySender(string $value)            Город отправителя: Ref из стравочника городов
+ * @method self changeSender(string $value)                Контрагент отправитель: Ref отправителя
+ * @method self changeSenderAddress(string $value)         Адреса отправителя: Ref отделения новой почты, от куда будет отправлена посылка
+ * @method self changeContactSender(string $value)         Контактное лицо отправителя: Ref контакта отправителя
+ * @method self changeSendersPhone(string $value)          Телефон отправителя
+ * @method self changeCityRecipient(string $value)         Город получателя: Ref из стравочника городов
+ * @method self changeRecipient(string $value)             Получатель: Ref Получателя
+ * @method self changeRecipientAddress(string $value)      Адрес получателя: Ref отделения или адреса куда нужно доставить посылку
+ * @method self changeContactRecipient(string $value)      Контактное лицо получателя: Ref контакта
+ * @method self changeRecipientsPhone(string $value)       Телефон получателя
+ * @method self changeAdditionalInformation(string $value) Добавочная текстовая информация
+ * @method self changeInfoRegClientBarcodes(string $value) Добавочная текстовая информация
  */
 class CreateExpressWaybillRequest extends BaseRequest implements RequestContract
 {
-    /*
-        apiKey*	string[36]	Ваш ключ API 2.0
-        modelName*	string	Имя модели
-        calledMethod*	string	Имя вызываемого метода
-        methodProperties	string	Свойства метода
-        PayerType*	string[36]	значение из справочника Тип плательщика
-        PaymentMethod*	string[36]	Значение из справочника Форма оплаты
-        DateTime*	string[36]	Дата отправки в формате дд.мм.гггг
-        CargoType*	string[36]	Значение из справочника Тип груза
-        VolumeGeneral	int[36]	Объем общий, м.куб (min - 0.0004), обязательно для заполнения, если не указаны значения OptionsSeat
-        Weight*	int[36]	min - 0,1 Вес фактический, кго
-        ServiceType*	string[36]	Значение из справочника Технология доставки
-        SeatsAmount*	string[36]	Целое число, количество мест отправления
-        Description*	string[50]	Текстовое поле, вводиться для доп. описания
-        Cost*	int[36]	Целое число, объявленная стоимость
-        CitySender*	string[36]	Идентификатор города отправителя
-        Sender*	string[36]	Идентификатор отправителя
-        SenderAddress*	string[36]	Идентификатор адреса отправителя
-        ContactSender*	string[36]	Идентификатор контактного лица отправителя
-        SendersPhone*	int[36]	Телефон отправителя в формате: +380660000000, 380660000000, 0660000000
-        CityRecipient*	string[36]	Идентификатор города получателя
-        Recipient*	string[36]	Идентификатор получателя
-        RecipientAddress*	string[36]	Идентификатор адреса получателя
-        ContactRecipient*	string[36]	Идентификатор контактного лица получателя
-        RecipientsPhone*	int[36]	телефон получателя в формате: +380660000000, 80660000000, 0660000000
-     * */
     /**
      * @var array|string[]
      */
@@ -67,30 +41,30 @@ class CreateExpressWaybillRequest extends BaseRequest implements RequestContract
         'modelName'        => 'InternetDocument',
         'calledMethod'     => 'save',
         'methodProperties' => [
-            'PayerType'             => 'Recipient',                              // кто платит
-            'PaymentMethod'         => 'Cash',                                   // тип оплаты
-            'DateTime'              => null,                                     // дата отправки
-            'CargoType'             => null,                                     // Тип груза
-            'CargoDetails'          => null,                                     // Массив данных о палетах
-            'VolumeGeneral'         => null,                                     // Объем общий, м.куб
-            'Weight'                => null,                                     // Вес фактический, кго
-            'ServiceType'           => 'WarehouseWarehouse',                     // Технология доставки
-            'SeatsAmount'           => '1',                                      // количество мест отправления
-            'Description'           => null,                                     // описание
-            'Cost'                  => null,                                     // объявленная стоимость
-            'CitySender'            => null,                                     // город отрпавителя
-            'Sender'                => null,                                     // Контрагент отправитель
-            'SenderAddress'         => null,                                     // адреса отправителя
-            'ContactSender'         => null,                                     // контактного лица отправителя
-            'SendersPhone'          => null,                                     // телефон отправителя
-            'CityRecipient'         => null,                                     // город получателя
-            'Recipient'             => null,                                     // получатель
-            'RecipientAddress'      => null,                                     // адреса получателя
-            'ContactRecipient'      => null,                                     // контактного лица получателя
-            'RecipientsPhone'       => null,                                     // телефон получателя
-            'BackwardDeliveryData'  => null,                                     // данные наложенного платежа
-            'AdditionalInformation' => null,                                     // добавочная текстовая информация
-            'OptionsSeat'           => null,                                     // информация о размерах мест
+            'PayerType'             => 'Recipient',
+            'PaymentMethod'         => 'Cash',
+            'DateTime'              => null,
+            'CargoType'             => null,
+            'CargoDetails'          => null,
+            'VolumeGeneral'         => null,
+            'Weight'                => null,
+            'ServiceType'           => 'WarehouseWarehouse',
+            'SeatsAmount'           => '1',
+            'Description'           => null,
+            'Cost'                  => null,
+            'CitySender'            => null,
+            'Sender'                => null,
+            'SenderAddress'         => null,
+            'ContactSender'         => null,
+            'SendersPhone'          => null,
+            'CityRecipient'         => null,
+            'Recipient'             => null,
+            'RecipientAddress'      => null,
+            'ContactRecipient'      => null,
+            'RecipientsPhone'       => null,
+            'BackwardDeliveryData'  => null,
+            'AdditionalInformation' => null,
+            'OptionsSeat'           => null,
             'InfoRegClientBarcodes' => null,
         ],
     ];
@@ -143,9 +117,9 @@ class CreateExpressWaybillRequest extends BaseRequest implements RequestContract
     /**
      * Добавить место
      *
-     * @param float      $width
-     * @param float      $height
-     * @param float      $length
+     * @param float $width
+     * @param float $height
+     * @param float $length
      * @param null|float $weight
      *
      * @return $this
@@ -197,7 +171,7 @@ class CreateExpressWaybillRequest extends BaseRequest implements RequestContract
      * Set field
      *
      * @param string $key
-     * @param mixed  $value
+     * @param mixed $value
      *
      * @return $this
      */
@@ -210,21 +184,26 @@ class CreateExpressWaybillRequest extends BaseRequest implements RequestContract
 
     public function getResponseClass(): ResponseContract
     {
-        return new CounterPartyListResponse(); // TODO
+        return new CreateEnResponse();
     }
 
     private function startsWith($haystack, $needles): bool
     {
-        if (! is_iterable($needles)) {
+        if (!is_iterable($needles)) {
             $needles = [$needles];
         }
 
         foreach ($needles as $needle) {
-            if ((string) $needle !== '' && str_starts_with($haystack, $needle)) {
+            if ((string)$needle !== '' && str_starts_with($haystack, $needle)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    public function send(): CreateEnResponse
+    {
+        return $this->run($this);
     }
 }

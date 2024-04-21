@@ -33,7 +33,7 @@ use Dou\NovaPoshta\Requests\Counterparty\GetSenderRequest;
 
 Из примера выше видно, что $response имеет свои методы для получения данных
 
-`$response->isSuccess()` - возвращает bool (true или false), и говорит о успешности запроса в целом
+`$response->isSuccess()` - возвращает bool (true или false), и говорит об успешности запроса в целом
 
 `$response->getData()` - получить весь массив данных ответа Новой Почты
 

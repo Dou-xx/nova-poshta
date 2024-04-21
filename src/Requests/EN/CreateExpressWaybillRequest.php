@@ -2,10 +2,10 @@
 
 namespace Dou\NovaPoshta\Requests\EN;
 
-use Dou\NovaPoshta\Requests\BaseRequest;
+use Dou\NovaPoshta\ArrHelper;
 use Dou\NovaPoshta\Contract\RequestContract;
 use Dou\NovaPoshta\Contract\ResponseContract;
-use Dou\NovaPoshta\ArrHelper;
+use Dou\NovaPoshta\Requests\BaseRequest;
 use Dou\NovaPoshta\Responses\CreateEnResponse;
 
 /**
@@ -30,7 +30,7 @@ use Dou\NovaPoshta\Responses\CreateEnResponse;
  * @method self changeContactRecipient(string $value)      Контактное лицо получателя: Ref контакта
  * @method self changeRecipientsPhone(string $value)       Телефон получателя
  * @method self changeAdditionalInformation(string $value) Добавочная текстовая информация
- * @method self changeInfoRegClientBarcodes(string $value) Добавочная текстовая информация
+ * @method self changeInfoRegClientBarcodes(string $value) Добавочная текстовая информация                                                                                                                                                                                                                                                                                                                      Добавочная текстовая информация
  */
 class CreateExpressWaybillRequest extends BaseRequest implements RequestContract
 {
@@ -69,6 +69,16 @@ class CreateExpressWaybillRequest extends BaseRequest implements RequestContract
         ],
     ];
 
+    /**
+     * Вызов функций change...
+     *
+     * @param $method
+     * @param $arguments
+     *
+     * @throws \Exception
+     *
+     * @return $this
+     */
     public function __call($method, $arguments): self
     {
         if ($this->startsWith($method, 'change')) {
@@ -85,7 +95,9 @@ class CreateExpressWaybillRequest extends BaseRequest implements RequestContract
     }
 
     /**
-     * @param float $totalOrder
+     * Добавить наложенной платеж
+     *
+     * @param float $totalOrder - сумма
      *
      * @return $this
      */
@@ -117,9 +129,9 @@ class CreateExpressWaybillRequest extends BaseRequest implements RequestContract
     /**
      * Добавить место
      *
-     * @param float $width
-     * @param float $height
-     * @param float $length
+     * @param float      $width
+     * @param float      $height
+     * @param float      $length
      * @param null|float $weight
      *
      * @return $this
@@ -168,23 +180,32 @@ class CreateExpressWaybillRequest extends BaseRequest implements RequestContract
     }
 
     /**
-     * Set field
-     *
-     * @param string $key
-     * @param mixed $value
-     *
-     * @return $this
+     * {@inheritDoc}
      */
-    private function set(string $key, $value): self
-    {
-        ArrHelper::set($this->requestStructure, $key, $value);
-
-        return $this;
-    }
-
     public function getResponseClass(): ResponseContract
     {
         return new CreateEnResponse();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function send(): CreateEnResponse|ResponseContract
+    {
+        return $this->run($this);
+    }
+
+    /**
+     * Set field
+     *
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return void
+     */
+    private function set(string $key, $value): void
+    {
+        ArrHelper::set($this->requestStructure, $key, $value);
     }
 
     private function startsWith($haystack, $needles): bool
@@ -194,16 +215,11 @@ class CreateExpressWaybillRequest extends BaseRequest implements RequestContract
         }
 
         foreach ($needles as $needle) {
-            if ((string)$needle !== '' && str_starts_with($haystack, $needle)) {
+            if ((string) $needle !== '' && str_starts_with($haystack, $needle)) {
                 return true;
             }
         }
 
         return false;
-    }
-
-    public function send(): CreateEnResponse
-    {
-        return $this->run($this);
     }
 }

@@ -4,11 +4,14 @@ namespace Dou\NovaPoshta\Requests\Counterparty;
 
 use Dou\NovaPoshta\Contract\RequestContract;
 use Dou\NovaPoshta\Contract\ResponseContract;
-use Dou\NovaPoshta\Responses\CounterPartyListResponse;
 use Dou\NovaPoshta\Requests\BaseRequest;
+use Dou\NovaPoshta\Responses\CounterPartyListResponse;
 
 class GetSenderRequest extends BaseRequest implements RequestContract
 {
+    /**
+     * {@inheritDoc}
+     */
     public function getRequest(): array
     {
         return [
@@ -21,12 +24,18 @@ class GetSenderRequest extends BaseRequest implements RequestContract
         ];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getResponseClass(): ResponseContract
     {
         return new CounterPartyListResponse();
     }
 
-    public function send(): CounterPartyListResponse
+    /**
+     * {@inheritDoc}
+     */
+    public function send(): CounterPartyListResponse|ResponseContract
     {
         return $this->run($this);
     }

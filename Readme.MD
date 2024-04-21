@@ -13,8 +13,8 @@
 
 ### Примеры кода:
 
-Важно! Для работы нужен Api Key Новой Почты  
-#### Получение отправителя:  
+Важно! Для работы нужен Api Key Новой Почты
+#### Получение отправителя:
 Класс GetSenderRequest  
 Результат - объект класса ResponseContract
 
@@ -33,24 +33,24 @@ use Dou\NovaPoshta\Requests\Counterparty\GetSenderRequest;
 
 Из примера выше видно, что $response имеет свои методы для получения данных
 
-`$response->isSuccess()` - возвращает bool (true или false), и говорит о успешности запроса в целом  
+`$response->isSuccess()` - возвращает bool (true или false), и говорит о успешности запроса в целом
 
-`$response->getData()` - получить весь массив данных ответа Новой Почты  
-        
-`$response->getItem()` - может принимать 2 параметра:  
+`$response->getData()` - получить весь массив данных ответа Новой Почты
+
+`$response->getItem()` - может принимать 2 параметра:
 - Первый это ключ в массиве полученных данных
-- Второй это номер элемента (индекс) полученного массива. 
-В ответе на запрос контактов отправителя элементов может быть несколько.
+- Второй это номер элемента (индекс) полученного массива.
+  В ответе на запрос контактов отправителя элементов может быть несколько.
 
 Примеры:  
 `$response->getItem('Ref')` - Получить значение Ref из первого элемента  
 `$response->getItem('Ref', 1)` - Получить значение Ref из второго элемента  
 `$response->getItem()` - Получить весь массив данных первого элемента  
-`$response->getItem(null, 1)` - Получить весь массив данных второго элемента  
+`$response->getItem(null, 1)` - Получить весь массив данных второго элемента
 
 ----
 
-#### Получить контакт отправителя:  
+#### Получить контакт отправителя:
 Класс GetCounterPartyContactsRequest  
 Результат - объект класса ResponseContract
 
@@ -74,11 +74,11 @@ use Dou\NovaPoshta\Requests\Counterparty\GetCounterPartyContactsRequest;
 
 ----
 
-#### Создать получателя (Физ-лицо):  
+#### Создать получателя (Физ-лицо):
 Класс CreateCounterPartyRequest  
 Результат - объект класса CounterPartyResponse  
 Этот запрос создает получателя, или если он уже существует - вернет его  
-Так-же в ответе уже есть и контактное лицо получателя 
+Так-же в ответе уже есть и контактное лицо получателя
 
 ```
 use Dou\NovaPoshta\Requests\Counterparty\CreateCounterPartyRequest;
@@ -95,10 +95,10 @@ use Dou\NovaPoshta\Requests\Counterparty\CreateCounterPartyRequest;
 
 ----
 
-#### Создать получателя (Организация, Юр-лицо)  
+#### Создать получателя (Организация, Юр-лицо)
 Класс CreateCounterPartyJuristicRequest  
 Результат - объект класса CounterPartyResponse  
-Для создания получателя нужно передать Код ЄДРПОУ организации получателя  
+Для создания получателя нужно передать Код ЄДРПОУ организации получателя
 
 ```
 use Dou\NovaPoshta\Requests\Counterparty\CreateCounterPartyJuristicRequest;
@@ -120,9 +120,9 @@ use Dou\NovaPoshta\Requests\Counterparty\CreateCounterPartyContactRequest;
 
 ----
 
-#### Создать адрес получателя  
+#### Создать адрес получателя
 Класс CreateAddressRequest  
-Результат - объект класса CounterPartyResponse  
+Результат - объект класса CounterPartyResponse
 
 ```
         $ref = $response->getCounterPartyRef();
@@ -137,8 +137,8 @@ use Dou\NovaPoshta\Requests\Counterparty\CreateCounterPartyContactRequest;
 ```
 
 ---- 
-#### Создать накладную (ТТН):  
-Класс CreateExpressWaybillRequest  
+#### Создать накладную (ТТН):
+Класс CreateExpressWaybillRequest
 - Есть множество методов передачи данные, каждый метод начинается со слова `change`
 - Поддерживаемые методы соответствуют документации Новой Почты
 
@@ -178,11 +178,11 @@ use Dou\NovaPoshta\Requests\Counterparty\CreateCounterPartyContactRequest;
  */
 ```
 
-Дополнительные функции:  
+Дополнительные функции:
 - Добавить услугу наложенного платежа `$createRequest->cashBack(500);` - наложенный платеж
 - Добавить контроль оплат `$createRequest->enableCashControl(500)` - Используется если есть договор с Новой Почтой
 - Добавить габариты и вес посылки (места) `addOptionsSeat(float $width, float $height, float $length, float $weight = null)`  
-Пример: 20 x 40 x 15 см, 3кг `$createRequest->addOptionsSeat(20, 40, 15, 3)`
+  Пример: 20 x 40 x 15 см, 3кг `$createRequest->addOptionsSeat(20, 40, 15, 3)`
 - Получить количество мест `$createRequest->getOptionsSeatsCount()`
 
 ----
@@ -264,4 +264,27 @@ public function createEN()
         dump($response->getRef());                   // 3a8befe9-ff47-11ee-a9e3-48df37b921da - ID документа в системе Новой Почты
     }
 
+```
+
+----
+
+### Трекинг ТТН
+Получение данных о состоянии доставки  
+Класс: TrackingRequest
+
+```
+    public function tracking() {
+        $apiKey = '78f19724b096.....c19b1541c0a';
+
+        $trackingRequest = new TrackingRequest($apiKey);
+        $trackingRequest->setSenderPhone('380979998877');
+        $trackingRequest->setTTNs([
+            '20450910916240',
+            '20450910817793',
+            '20450910815791'
+        ]);
+
+        $response = $trackingRequest->send();
+        dump($response->getData());
+    }
 ```

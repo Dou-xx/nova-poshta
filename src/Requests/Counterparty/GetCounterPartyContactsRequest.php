@@ -4,13 +4,25 @@ namespace Dou\NovaPoshta\Requests\Counterparty;
 
 use Dou\NovaPoshta\Contract\RequestContract;
 use Dou\NovaPoshta\Contract\ResponseContract;
-use Dou\NovaPoshta\Responses\CounterPartyListResponse;
 use Dou\NovaPoshta\Requests\BaseRequest;
+use Dou\NovaPoshta\Responses\CounterPartyListResponse;
 
 class GetCounterPartyContactsRequest extends BaseRequest implements RequestContract
 {
+    /**
+     * Ref контрагента
+     *
+     * @var string
+     */
     private string $ref;
 
+    /**
+     * Установить Ref контрагента
+     *
+     * @param string $ref
+     *
+     * @return $this
+     */
     public function setRef(string $ref): self
     {
         $this->ref = $ref;
@@ -18,6 +30,9 @@ class GetCounterPartyContactsRequest extends BaseRequest implements RequestContr
         return $this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getRequest(): array
     {
         return [
@@ -29,12 +44,18 @@ class GetCounterPartyContactsRequest extends BaseRequest implements RequestContr
         ];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getResponseClass(): ResponseContract
     {
         return new CounterPartyListResponse();
     }
 
-    public function send(): CounterPartyListResponse
+    /**
+     * {@inheritDoc}
+     */
+    public function send(): CounterPartyListResponse|ResponseContract
     {
         return $this->run($this);
     }

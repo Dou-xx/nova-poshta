@@ -1,26 +1,33 @@
 <?php
 
-namespace App\Services\NovaPoshta\ApiRequests\EN;
+namespace Dou\NovaPoshta\Requests\EN;
 
-use App\Services\NovaPoshta\ApiRequests\NovaPoshtaApiContract;
-use Illuminate\Support\Arr;
+use Dou\NovaPoshta\ArrHelper;
+use Dou\NovaPoshta\Contract\RequestContract;
+use Dou\NovaPoshta\Contract\ResponseContract;
+use Dou\NovaPoshta\Requests\BaseRequest;
+use Dou\NovaPoshta\Responses\BaseResponse;
 
-class TrackingRequest implements NovaPoshtaApiContract
+class TrackingRequest extends BaseRequest implements RequestContract
 {
     /**
      * @var array|string[]
      */
-    protected array $requestStructure = [
+    private array $requestStructure = [
         'modelName'    => 'TrackingDocument',
         'calledMethod' => 'getStatusDocuments',
     ];
 
     /**
-     * @var null
+     * Номер телефона отправителя
+     *
+     * @var null|string
      */
-    protected $senderPhone;
+    private string|null $senderPhone = null;
 
     /**
+     * Заменить номер телефона отправителя
+     *
      * @param string $phone
      *
      * @return $this
@@ -33,30 +40,49 @@ class TrackingRequest implements NovaPoshtaApiContract
     }
 
     /**
-     * Set TTN
+     * Передать список TTN
      *
-     * @param array $ttns
+     * @param array $ttnList
      *
      * @return $this
      */
-    public function setTTNs(array $ttns): self
+    public function setTTNs(array $ttnList): self
     {
         $data = [];
 
-        foreach ($ttns as $item) {
+        foreach ($ttnList as $item) {
             $data[] = [
                 'DocumentNumber' => $item,
-                'Phone' => $this->senderPhone,
+                'Phone'          => $this->senderPhone,
             ];
         }
 
-        Arr::set($this->requestStructure, 'methodProperties.Documents', $data);
+        ArrHelper::set($this->requestStructure, 'methodProperties.Documents', $data);
 
         return $this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getRequest(): array
     {
         return $this->requestStructure;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getResponseClass(): ResponseContract
+    {
+        return new BaseResponse();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function send(): ResponseContract|BaseResponse
+    {
+        return $this->run($this);
     }
 }

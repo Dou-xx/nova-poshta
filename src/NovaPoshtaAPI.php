@@ -13,7 +13,7 @@ class NovaPoshtaAPI
      *
      * @var string
      */
-    private string $apiKey; // 78f19724b096bb6d5f6a0c19b1541c0a
+    private string $apiKey;
 
     /**
      * NovaPoshtaAPI constructor.
@@ -25,6 +25,14 @@ class NovaPoshtaAPI
         $this->apiKey = $apiKey;
     }
 
+    /**
+     * Отправить запрос в API Новой Почты
+     *
+     * @param RequestContract $request
+     *
+     * @return ResponseContract
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function send(RequestContract $request): ResponseContract
     {
         try {

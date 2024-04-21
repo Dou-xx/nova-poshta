@@ -4,18 +4,33 @@ namespace Dou\NovaPoshta\Requests\Counterparty;
 
 use Dou\NovaPoshta\Contract\RequestContract;
 use Dou\NovaPoshta\Contract\ResponseContract;
-use Dou\NovaPoshta\Responses\CounterPartyResponse;
 use Dou\NovaPoshta\Requests\BaseRequest;
+use Dou\NovaPoshta\Responses\CounterPartyResponse;
 
 class CreateCounterPartyJuristicRequest extends BaseRequest implements RequestContract
 {
+    /**
+     * Код ЄДРПОУ
+     *
+     * @var string
+     */
     private string $edrpou;
 
-    public function setFields(string $edrpou)
+    /**
+     * @param string $edrpou
+     *
+     * @return $this
+     */
+    public function setFields(string $edrpou): self
     {
         $this->edrpou = $edrpou;
+
+        return $this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getRequest(): array
     {
         return [
@@ -29,12 +44,18 @@ class CreateCounterPartyJuristicRequest extends BaseRequest implements RequestCo
         ];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getResponseClass(): ResponseContract
     {
         return new CounterPartyResponse();
     }
 
-    public function send(): CounterPartyResponse
+    /**
+     * {@inheritDoc}
+     */
+    public function send(): CounterPartyResponse|ResponseContract
     {
         return $this->run($this);
     }

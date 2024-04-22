@@ -1,4 +1,4 @@
-# Nova Poshta (Документация в процессе написания)
+# Nova Poshta
 ### PHP библиотека для работы с API Новой Почты
 
 ------
@@ -6,7 +6,8 @@
 - Получение данных и контакт отправителя
 - Создание/Получение данных и контакт получателя (Физ. и Юр. лицо)
 - Создание адреса получателя
-- Создание EN документа (ТТН)
+- Создание накладной (ТТН)
+- Трекинг ТТН
 
 ### Установка
 `composer require dou-xx/nova-poshta`
@@ -56,7 +57,9 @@ use Dou\NovaPoshta\Requests\Counterparty\GetSenderRequest;
 
 ```
 use Dou\NovaPoshta\Requests\Counterparty\GetCounterPartyContactsRequest;
-
+        
+        .....
+        
         // это идентификатор отправителя из прошлого примера
         $ref = $response->getItem('Ref');
         
@@ -125,6 +128,10 @@ use Dou\NovaPoshta\Requests\Counterparty\CreateCounterPartyContactRequest;
 Результат - объект класса CounterPartyResponse
 
 ```
+use Dou\NovaPoshta\Requests\Address\CreateAddressRequest;
+       
+        .....
+
         $ref = $response->getCounterPartyRef();
         $cityRef = '4a579385-413e-11dd-9198-001d60451983';
 
@@ -210,7 +217,6 @@ public function createEN()
             ->setRef($senderResponse->getItem('Ref'))
             ->send();
 
-
         // 2. Создаем или получаем получателя посылки
         $recipientRequest = new CreateCounterPartyRequest($apiKey);
 
@@ -266,6 +272,15 @@ public function createEN()
 
 ```
 
+Так-же, функция `$createRequest->change...()` возвращает свой экземпляр класса, по этому можно вызвать изменения вот так:
+
+```
+        $createRequest->changePayerType('Recipient')
+            ->changePaymentMethod('Cash')
+            ->changeCargoType('Parcel')
+            ->changeWeight(2);
+```
+
 ----
 
 ### Трекинг ТТН
@@ -287,4 +302,43 @@ public function createEN()
         $response = $trackingRequest->send();
         dump($response->getData());
     }
+```
+
+-----
+
+### Вспомогательный класс NovaPoshta
+Принимает api key и возвращает нужный класс запроса  
+Пример: что б постоянно не передавать api_key в каждый класс запроса, как тут
+```
+        $apiKey = '78f19724b096.....0c19b1541c0a';
+        $senderRequest = new GetSenderRequest($apiKey);
+        $senderContactRequest = new GetCounterPartyContactsRequest($apiKey);
+        $recipientRequest = new CreateCounterPartyRequest($apiKey);
+        ....
+```
+Можно воспользоваться классом NovaPoshta и запросить нужный класс Request  
+передав api_key один раз
+
+```
+use Dou\NovaPoshta\NovaPoshta;
+
+        $apiKey = '78f19724b096.....0c19b1541c0a';
+        $helper = new NovaPoshta($apiKey);
+
+        $senderRequest = $helper->GetSenderRequest();
+        $senderContactRequest = $helper->GetCounterPartyContactsRequest();
+        $recipientRequest = $helper->CreateCounterPartyRequest();
+        $createRequest = $helper->CreateExpressWaybillRequest();
+
+        // Весь список доступных методов 
+        
+        // $helper->CreateAddressRequest()
+        // $helper->GetAddressByRefRequest()
+        // $helper->CreateCounterPartyRequest()
+        // $helper->CreateCounterPartyContactRequest()
+        // $helper->CreateCounterPartyJuristicRequest()
+        // $helper->GetCounterPartyContactsRequest()
+        // $helper->GetSenderRequest()
+        // $helper->CreateExpressWaybillRequest()
+        // $helper->TrackingRequest()
 ```

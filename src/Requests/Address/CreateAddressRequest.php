@@ -38,21 +38,30 @@ class CreateAddressRequest extends BaseRequest implements RequestContract
     private ?string $flat;
 
     /**
+     * Комментарий, можно указать уточнение адреса, такое как название магазина
+     *
+     * @var string|null
+     */
+    private ?string $note;
+
+    /**
      * Заполнить данные для создания адреса
      *
-     * @param string      $counterpartyRef
-     * @param string      $streetRef
+     * @param string $counterpartyRef
+     * @param string $streetRef
      * @param null|string $buildNumber
      * @param null|string $flat
+     * @param null $note
      *
      * @return self
      */
-    public function setFields(string $counterpartyRef, string $streetRef, ?string $buildNumber, ?string $flat): self
+    public function setFields(string $counterpartyRef, string $streetRef, ?string $buildNumber, ?string $flat, $note = null): self
     {
         $this->counterpartyRef = $counterpartyRef;
         $this->streetRef = $streetRef;
         $this->buildNumber = $buildNumber;
         $this->flat = $flat;
+        $this->note = $note;
 
         return $this;
     }
@@ -70,7 +79,7 @@ class CreateAddressRequest extends BaseRequest implements RequestContract
                 'StreetRef'       => $this->streetRef,
                 'BuildingNumber'  => $this->buildNumber,
                 'Flat'            => $this->flat,
-                'Note'            => null,
+                'Note'            => $this->note,
             ],
         ];
     }
